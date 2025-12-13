@@ -1,0 +1,9 @@
+{
+  "table": "DEFAULT_TABLE",
+  "CLIENT_ID": "",
+  "CLIENT_SECRET": "",
+  "displayHost": "localhost",
+  "port": 12345,
+  "https": false,
+  "callbackPath": "/callback"
+}

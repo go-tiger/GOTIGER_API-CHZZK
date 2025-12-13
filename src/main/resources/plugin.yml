@@ -1,0 +1,4 @@
+name: GOTIGER_API
+version: '${version}'
+main: dev.gotiger.gotiger_api.GOTIGER_API
+api-version: '1.16'
