@@ -35,6 +35,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -44,6 +45,7 @@ public class PlayerListener implements Listener {
     private final ConfigLoader configLoader;
     private final CustomChzzkOauthLoginAdapter sharedAdapter;
     private final Map<UUID, ChzzkUserSession> activeSessions = new ConcurrentHashMap<>();
+    private final Set<UUID> linkedPlayers = ConcurrentHashMap.newKeySet();
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
 
     public PlayerListener(GOTIGER_API plugin, ConfigLoader configLoader, CustomChzzkOauthLoginAdapter sharedAdapter) {
@@ -56,10 +58,15 @@ public class PlayerListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
         ChzzkUserSession session = activeSessions.remove(uuid);
+        linkedPlayers.remove(uuid);
         if (session != null) {
             session.disconnectAsync().join();
             plugin.getLogger().info("[CHZZK] " + event.getPlayer().getName() + " 세션 종료됨");
         }
+    }
+
+    public boolean isLinked(UUID uuid) {
+        return linkedPlayers.contains(uuid);
     }
 
     @EventHandler
@@ -176,6 +183,7 @@ public class PlayerListener implements Listener {
 
             session.createAndConnectAsync().join();
             activeSessions.put(uuid, session);
+            linkedPlayers.add(uuid);
             session.subscribeAsync(ChzzkSessionSubscriptionType.CHAT).join();
             session.subscribeAsync(ChzzkSessionSubscriptionType.DONATION).join();
 

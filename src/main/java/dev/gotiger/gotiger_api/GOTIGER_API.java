@@ -3,6 +3,7 @@ package dev.gotiger.gotiger_api;
 import dev.gotiger.gotiger_api.config.ConfigLoader;
 import dev.gotiger.gotiger_api.config.CustomChzzkOauthLoginAdapter;
 import dev.gotiger.gotiger_api.listener.PlayerListener;
+import dev.gotiger.gotiger_api.placeholder.ChzzkPlaceholder;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -46,7 +47,16 @@ public final class GOTIGER_API extends JavaPlugin {
         sharedAdapter.startServerOnce();
 
         // 리스너 등록
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(this, configLoader, sharedAdapter), this);
+        PlayerListener playerListener = new PlayerListener(this, configLoader, sharedAdapter);
+        Bukkit.getPluginManager().registerEvents(playerListener, this);
+
+        // PlaceholderAPI 등록
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new ChzzkPlaceholder(this, playerListener).register();
+            getLogger().info("✅ PlaceholderAPI 연동 완료");
+        } else {
+            getLogger().warning("⚠ PlaceholderAPI가 없습니다. 플레이스홀더를 사용할 수 없습니다.");
+        }
 
         getLogger().info("✅ GOTIGER_API 플러그인 활성화 완료");
     }

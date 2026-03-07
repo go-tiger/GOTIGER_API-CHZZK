@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'dev.gotiger'
-version = '1.2'
+version = '1.3'
 
 repositories {
     mavenCentral()
@@ -16,10 +16,15 @@ repositories {
         name = "sonatype"
         url = "https://s01.oss.sonatype.org/content/repositories/releases/"
     }
+    maven {
+        name = "placeholderapi"
+        url = "https://repo.extendedclip.com/content/repositories/placeholderapi/"
+    }
 }
 
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT"
+    compileOnly "me.clip:placeholderapi:2.11.6"
     implementation("io.github.r2turntrue:chzzk4j:0.1.4")
     implementation "org.xerial:sqlite-jdbc:3.42.0.0"
     implementation "org.json:json:20090211"
