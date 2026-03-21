@@ -144,8 +144,14 @@ public class PlayerListener implements Listener {
         ChzzkClient client = new ChzzkClientBuilder(configLoader.getClientId(), configLoader.getClientSecret())
                 .withLoginAdapter(adapter)
                 .build();
-        client.loginAsync().join();
-        client.refreshTokenAsync().join();
+        try {
+            client.loginAsync().join();
+            client.refreshTokenAsync().join();
+        } catch (Exception e) {
+            plugin.getLogger().warning("[CHZZK] 토큰 갱신 실패 (401), 재인증 요청: " + player.getName());
+            initiateReauthentication(player, uuid);
+            return;
+        }
 
         ChzzkLoginResult result = client.getLoginResult();
         if (result != null) {
